@@ -1,36 +1,42 @@
 // board.cpp
 
 #include <vector>
+#include <memory>
+
 #include "board.hpp"
 using namespace std;
 
 
-// board constructor returns an empty 9x9 sodoku board
+// board constructor initializes an empty 9x9 sodoku board
+board::board() : 
+    b{make_unique<gameBoard>(9,vector<int>(9,0))}
+    
+{
 
-board::board(){
-    make_unique<gameBoard>() myBoard{};
+   
+    for(vector<int> v : *b){
+        for(int i : v){
+            cout<<i;
+        }
+        cout<<endl;
+    }
 }
 
+board::~board(){
+    
+}
     
 // pretty prints the board
 void printBoard(){
-    auto myBoard = inputBoard;
+    // auto myBoard = inputBoard;
 }
 
+// called during board class construction
+// to allocate stack memory
 
-board* board::initializeBoard(){
-    // initializes an empty 9x9 board
-    make_unique<board> myBoard{};
-    myBoard.reserve(9);
-
-    for(int i = 0; i < 9; i++){
-        vector<int> innerBoard{};
-        innerBoard.reserve(9);
-
-        myBoard[i] = innerBoard;
-
-    }
-    return &myBoard;
+unique_ptr<gameBoard> initializeBoard(){
+    unique_ptr<gameBoard> retBoard = make_unique<gameBoard>();
+    return retBoard;
 }
 
 

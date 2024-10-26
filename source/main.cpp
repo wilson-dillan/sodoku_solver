@@ -8,7 +8,11 @@ int main(){
 
     cout<<"HELLO WORLD\n"<<endl;
     
-    auto myBoard = initializeBoard();
+    board myBoard{};
+    unique_ptr<gameBoard> p = make_unique<gameBoard>(9,vector<int>(9,0));
+
+   
+    
     
     return 0;
 }
