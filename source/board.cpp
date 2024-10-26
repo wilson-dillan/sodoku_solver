@@ -5,30 +5,28 @@
 
 #include "board.hpp"
 using namespace std;
+using namespace constants; 
 
 
 // board constructor initializes an empty 9x9 sodoku board
 board::board() : 
-    b{make_unique<gameBoard>(9,vector<int>(9,0))}
-    
-{
-
-   
-    for(vector<int> v : *b){
-        for(int i : v){
-            cout<<i;
-        }
-        cout<<endl;
-    }
-}
+    b{make_unique<gameBoard>(9,vector<int>(9,0))},
+    height{HEIGHT},
+    width{WIDTH} {}
 
 board::~board(){
     
 }
     
 // pretty prints the board
-void printBoard(){
-    // auto myBoard = inputBoard;
+void board::printBoard(){
+    int idx{HEIGHT};
+    
+    for(int i = 0; i < HEIGHT; i++){
+        for(int j = 0; j < WIDTH; j++){
+            
+        }
+    }
 }
 
 // called during board class construction
