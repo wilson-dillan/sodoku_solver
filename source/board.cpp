@@ -15,7 +15,7 @@ board::board() :
     width{WIDTH} {}
 
 board::~board(){
-    
+  // hello world    
 }
     
 // pretty prints the board
