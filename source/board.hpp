@@ -18,11 +18,11 @@ class board{
 
   public:
     board(); // constructor for board. Default is board filled with zeros
+    board(const gameBoard&); // accepts a game board to initialize the class
     ~board(); // destructor
-    board(gameBoard); // Accepts a game board to initialize a board class
     void printBoard(); // pretty prints the class's board
   private:
-    unique_ptr<gameBoard> b; // block of memory holding the board
+    unique_ptr<gameBoard>  b; // block of memory holding the board
     int height; // height of board
     int width; // width of board
     /*
