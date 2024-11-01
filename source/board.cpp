@@ -2,25 +2,32 @@
 
 #include <vector>
 #include <memory>
+#include <set>
 
 #include "board.hpp"
+#include "solver.hpp"
+
 using namespace std;
 using namespace constants; 
 
 
 // board constructor initializes an empty 9x9 sodoku board
 board::board() : 
-    b{make_unique<gameBoard>(9,vector<int>(9,0))},
-    height{HEIGHT},
-    width{WIDTH} {}
+    b_{make_unique<gameBoard>(9,vector<int>(9,0))},
+    height_{HEIGHT},
+    width_{WIDTH} {}
 
 board::board(const gameBoard& input) :
-    b{make_unique<gameBoard>(input)},
-      height{HEIGHT},
-      width{WIDTH} {}
+    b_{make_unique<gameBoard>(input)},
+      height_{HEIGHT},
+      width_{WIDTH} {}
 
 board::~board(){
   // hello world    
+}
+
+int board::get(int x, int y){
+    return (*b_)[y][x];
 }
     
 // pretty prints the board
@@ -38,7 +45,7 @@ void board::printBoard(){
                 cout<< "| ";
             }
             if(j < WIDTH && i < HEIGHT){
-                cout << (*b)[i][j] << ' '; 
+                cout << (*b_)[i][j] << ' '; 
             }
         }
         cout<<endl;
@@ -54,12 +61,15 @@ void board::printBoard(){
     
 }
 
-// called during board class construction
-// to allocate stack memory
+// returns if the board is valid or not
+// obtain 27 sets
 
-unique_ptr<gameBoard> initializeBoard(){
-    unique_ptr<gameBoard> retBoard = make_unique<gameBoard>();
-    return retBoard;
+bool board::isValidBoard(){
+    for(int i = 0; i < HEIGHT; i++){
+        
+    }
+    return false;
 }
+
 
 

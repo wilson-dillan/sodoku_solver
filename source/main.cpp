@@ -13,7 +13,7 @@ int main(){
         {2, 2, 2, 2, 2, 2, 2, 2, 2},
         {3, 3, 3, 3, 3, 3, 3, 3, 3},
         {4, 4, 4, 4, 4, 4, 4, 4, 4},
-        {5, 5, 5, 5, 5, 5, 5, 5, 5},
+        {5, 5, 5, 54, 55, 5, 5, 5, 5},
         {6, 6, 6, 6, 6, 6, 6, 6, 6},
         {7, 7, 7, 7, 7, 7, 7, 7, 7},
         {8, 8, 8, 8, 8, 8, 8, 8, 8}
@@ -21,9 +21,9 @@ int main(){
     
     board myBoard{};
     board otherBoard{b};
+
     
-    // myBoard.printBoard();
-    otherBoard.printBoard();
+    cout<<otherBoard[4][5] << endl;
     
     return 0;
 }
