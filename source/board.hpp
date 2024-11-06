@@ -8,12 +8,12 @@
 
 using namespace std;
 
-typedef vector<vector<int>> gameBoard; // typedef of board that stores the pieces
+typedef vector<vector<int> > gameBoard; // typedef of board that stores the pieces
 
 namespace constants
 {
-const int HEIGHT{9};
-const int WIDTH{9};
+const int HEIGHT = 9;
+const int WIDTH = 9;
 }
 
 class board{
