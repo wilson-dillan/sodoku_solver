@@ -27,7 +27,7 @@ setBundle solver::getSets() {
     
     for(int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
-            auto currVal = b_.at(i,j);
+            //            auto currVal = b_.at(i,j);
             
         }
     }
