@@ -9,10 +9,6 @@ EXECUTABLE = my_program
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 
-INCL = &*
-# Note: The above will soon get unwieldy.
-# The wildcard and patsubt commands will come to your rescue.
-
 
 all: $(EXECUTABLE)
 
