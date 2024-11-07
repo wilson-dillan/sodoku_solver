@@ -4,8 +4,7 @@
 #include <memory>
 #include <set>
 
-#include "board.hpp"
-#include "solver.hpp"
+#include "../include/board.hpp"
 
 using namespace std;
 using namespace constants; 

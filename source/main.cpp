@@ -7,6 +7,7 @@ using namespace constants;
 using namespace std;
 int main(){
 
+    
     gameBoard b{
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -22,7 +23,7 @@ int main(){
     board myBoard{};
     board otherBoard{b};
 
-    
+    cout<<otherBoard[4][6] <<endl;
     cout<<otherBoard[4][5] << endl;
     
     return 0;

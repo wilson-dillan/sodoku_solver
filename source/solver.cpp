@@ -1,7 +1,7 @@
 // solver.cpp
 
 
-#include "solver.hpp"
+#include "../include/solver.hpp"
 
 #include <map>
 

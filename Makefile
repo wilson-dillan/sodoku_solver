@@ -1,15 +1,28 @@
 SRC_DIR = source
+INC_DIR = include
 OBJ_DIR = object
-CFLAGS  = -c -Wall -I.
-SRCS = $(SRC_DIR)/board.cpp $(SRC_DIR)/main.cpp $(SRC_DIR)/solver.cpp
-OBJS = $(OBJ_DIR)/board.o $(OBJ_DIR)/main.o $(OBJ_DIR)/solver.o
+CFLAGS  = -c -Wall -I. -I$(INC_DIR)
+LDFLAGS = -o
+CC = g++
+EXECUTABLE = my_program
+
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+
+INCL = &*
 # Note: The above will soon get unwieldy.
 # The wildcard and patsubt commands will come to your rescue.
 
 
-all: $(OBJS)
+all: $(EXECUTABLE)
+
+$(EXECUTABLE) : $(OBJS)
+	$(CC) $(OBJS) $(LDFLAGS) $(EXECUTABLE)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/Trace.o: $(DEPS)
+clean:
+	rm -f $(OBJ_DIR)/*.o $(EXECUTABLE)
+run: $(EXECUTABLE)
+	./$(EXECUTABLE)
