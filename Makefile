@@ -22,3 +22,4 @@ clean:
 	rm -f $(OBJ_DIR)/*.o $(EXECUTABLE)
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)
+

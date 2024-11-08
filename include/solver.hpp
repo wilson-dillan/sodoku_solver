@@ -9,10 +9,12 @@ typedef vector<vector<set<int>>> setBundle;
 using namespace std;
 class solver {
   public:
-    solver() = delete;
+    // solver() = delete;
     solver(board&); // solver needs a board reference
-    setBundle getSets();// returns a vector of sets for each row, column and cell. 27 total 
+    void solve();
   private:
-    board& b_;
+    setBundle getSets();// returns a vector of sets for each row, column and cell. 27 total `
+    board& board_;
+    
     
 }; 

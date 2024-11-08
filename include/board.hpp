@@ -40,8 +40,10 @@ class board{
         return tmp;
     };
     int get(int x, int y); // helper method for double operator indexing
+    unique_ptr<gameBoard> solve();
   private:
     unique_ptr<gameBoard>  b_; // block of memory holding the board
+    unique_ptr<gameBoard> solvedBoard_; // block of memory holding the solved board
     int height_; // height of board
     int width_; // width of board
     /*

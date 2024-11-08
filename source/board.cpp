@@ -13,13 +13,15 @@ using namespace constants;
 // board constructor initializes an empty 9x9 sodoku board
 board::board() : 
     b_{make_unique<gameBoard>(9,vector<int>(9,0))},
+    solvedBoard_{make_unique<gameBoard>(9,vector<int>(9,0))},
     height_{HEIGHT},
     width_{WIDTH} {}
 
 board::board(const gameBoard& input) :
     b_{make_unique<gameBoard>(input)},
-      height_{HEIGHT},
-      width_{WIDTH} {}
+    solvedBoard_{make_unique<gameBoard>(9,vector<int>(9,0))},
+    height_{HEIGHT},
+    width_{WIDTH} {}
 
 board::~board(){
   // hello world    
@@ -70,5 +72,7 @@ bool board::isValidBoard(){
     return false;
 }
 
-
+unique_ptr<gameBoard> board::solve(){
+    return move(solvedBoard_);
+}
 

@@ -1,12 +1,11 @@
 // main.cpp
 
 #include <iostream>
-#include "board.hpp"
+#include "../include/board.hpp"
 
 using namespace constants; 
 using namespace std;
 int main(){
-
     
     gameBoard b{
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -23,8 +22,9 @@ int main(){
     board myBoard{};
     board otherBoard{b};
 
-    cout<<otherBoard[4][6] <<endl;
-    cout<<otherBoard[4][5] << endl;
+    cout<<"VALUE\t" << otherBoard[3][4]<< endl;
+
+    cout<<"Source Files Ran"<< endl;
     
     return 0;
 }

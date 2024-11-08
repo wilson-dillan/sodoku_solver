@@ -2,6 +2,7 @@
 
 
 #include "../include/solver.hpp"
+#include "../include/board.hpp"
 
 #include <map>
 
@@ -9,7 +10,7 @@
 using namespace constants;
 
 typedef map<int,vector<int>> groupingData;
-solver::solver(board& b) : b_{b} {}
+solver::solver(board& b) : board_{b} {}
 
 // extracts a vector for each one
 setBundle solver::getSets() {
@@ -33,4 +34,10 @@ setBundle solver::getSets() {
     }
     
     return s;
+}
+
+void solver::solve(){
+    // auto tmp = solvedBoard_.get();
+    // auto tmp = board_.solvedBoard_.get();
+    // board& b = solvedBoard_.get();
 }
