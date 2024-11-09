@@ -2,10 +2,14 @@
 
 #include <iostream>
 #include "../include/board.hpp"
+#include "../include/solver.hpp"
 
 using namespace constants; 
 using namespace std;
+
 int main(){
+ 
+
     
     gameBoard b{
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -19,12 +23,11 @@ int main(){
         {8, 8, 8, 8, 8, 8, 8, 8, 8}
     };
     
-    board myBoard{};
-    board otherBoard{b};
+    solver mySolver{make_unique<board>(b)};
+    unique_ptr<board> solvedBoard = mySolver.solve();
+    mySolver.getSets();
 
-    cout<<"VALUE\t" << otherBoard[3][4]<< endl;
-
-    cout<<"Source Files Ran"<< endl;
+    // the best way for me to access the unique_ptr resource is to create a reference to it via get()
     
     return 0;
 }

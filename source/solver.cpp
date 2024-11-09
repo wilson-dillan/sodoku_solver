@@ -8,36 +8,54 @@
 
 // holds data structures for analyzing and parsing through the board
 using namespace constants;
+using namespace std;
 
-typedef map<int,vector<int>> groupingData;
-solver::solver(board& b) : board_{b} {}
+typedef map<int,vector<int>> groupingMap;
 
+solver::solver(unique_ptr<board> b) :
+    initialBoard_{move(b)},
+    solvedBoard_{move(make_unique<board>())}
+{}
+
+int coordinateToCell(int,int);
 // extracts a vector for each one
 setBundle solver::getSets() {
-
     setBundle s{};
-    groupingData row;
-    groupingData col;
-    groupingData cell;
+    groupingMap row;
+    groupingMap col;
+    groupingMap cell;
 
+    auto& tmpBoard = (*initialBoard_.get());
     for(int i = 0; i < HEIGHT; i++){
-        row[i+1] = vector<int>(9,0);
-        col[i+1] = vector<int>(9,0);
-        cell[i+1] = vector<int>(9,0);
+        row[i] = vector<int>();
+        col[i] = vector<int>();
+        cell[i] = vector<int>();
     }
     
-    for(int i = 0; i < HEIGHT; i++){
-        for(int j = 0; j < WIDTH; j++){
-            //            auto currVal = b_.at(i,j);
-            
+    for(int x = 0; x < WIDTH; x++){
+        for(int y = 0; y < HEIGHT; y++){
+            row[y].push_back(1); // push back all the same values at this y coordinate
+            col[x].push_back(1);
+            cell[coordinateToCell(x,y)].push_back(1);
         }
     }
     
     return s;
 }
 
-void solver::solve(){
-    // auto tmp = solvedBoard_.get();
-    // auto tmp = board_.solvedBoard_.get();
-    // board& b = solvedBoard_.get();
+unique_ptr<board> solver::solve(){
+    // call funcitons to resolve the board
+    return move(solvedBoard_);
+}
+
+bool solver::isValidBoard(){
+    // fill in logic here
+    return false;
+}
+
+// returns the cell number based on the
+// given x and y input coordinate
+
+int coordinateToCell(int x, int y){
+    return (x/3 + 1) + (y/3 *3);
 }

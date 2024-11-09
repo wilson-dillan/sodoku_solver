@@ -43,7 +43,6 @@ class board{
     unique_ptr<gameBoard> solve();
   private:
     unique_ptr<gameBoard>  b_; // block of memory holding the board
-    unique_ptr<gameBoard> solvedBoard_; // block of memory holding the solved board
     int height_; // height of board
     int width_; // width of board
     /*
@@ -66,17 +65,17 @@ class board{
 /*                       CELL NUMBERS
     ---------------------------------------------------------
     |                   |                   |               |
-    |       7            |       8          |       9       |
+    |       1           |       2           |       3       |
     |                   |                   |               |
     |                   |                   |               |
     --------------------------------------------------------|
     |                   |                   |               |
-    |       4            |       5          |       6       |
+    |       4           |       5           |       6       |
     |                   |                   |               |
     |                   |                   |               |
     --------------------------------------------------------|
     |                   |                   |               |
-    |       1            |       2          |       3       |
+    |       7           |       8           |       9       |
     |                   |                   |               |
     |                   |                   |               |
     ---------------------------------------------------------
