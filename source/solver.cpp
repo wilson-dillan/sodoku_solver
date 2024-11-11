@@ -25,7 +25,7 @@ setBundle solver::getSets() {
     groupingMap col;
     groupingMap cell;
 
-    auto& tmpBoard = (*initialBoard_.get());
+    board& tmpBoard = (*initialBoard_.get());
     for(int i = 0; i < HEIGHT; i++){
         row[i] = vector<int>();
         col[i] = vector<int>();
@@ -34,9 +34,9 @@ setBundle solver::getSets() {
     
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
-            row[y].push_back(1); // push back all the same values at this y coordinate
-            col[x].push_back(1);
-            cell[coordinateToCell(x,y)].push_back(1);
+            row[y].push_back(tmpBoard[x][y]); // push back all the same values at this y coordinate
+            col[x].push_back(tmpBoard[x][y]);
+            cell[coordinateToCell(x,y)].push_back(tmpBoard[x][y]);
         }
     }
     

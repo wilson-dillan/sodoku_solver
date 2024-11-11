@@ -25,6 +25,17 @@ gameBoard b{
     {1, 2, 3, 4, 5, 6, 7, 8, 9}
 };
 board myBoard{b};
+
+// returns true if the input vector, @param l, contains @param v. 
+bool listContainsVector(vector<vector<int>> l, vector<int> v){
+    for(auto& e : l){
+        if(e == v){
+            return true;
+        }
+    }
+    return false;
+}
+
 }
 
 // checks the coordinate on the board is as expected
@@ -34,6 +45,13 @@ void checkCoordinateSimple()
     IS_TRUE(myBoard[4][7] == 55);
 }
 
+
+// check that getSets chunks the input board properly
+void examineGetSets(){
+    // auto bbb = make_unique<board>(b);
+    solver s{make_unique<board>(b)};
+    setBundle bundle = s.getSets();
+}
 int main(){
 
 
