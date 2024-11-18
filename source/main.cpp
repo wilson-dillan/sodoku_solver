@@ -25,7 +25,7 @@ int main(){
     
     solver mySolver{make_unique<board>(b)};
     unique_ptr<board> solvedBoard = mySolver.solve();
-    mySolver.getSets();
+
 
     // the best way for me to access the unique_ptr resource is to create a reference to it via get()
     
