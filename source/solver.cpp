@@ -20,27 +20,28 @@ solver::solver(unique_ptr<board> b) :
 int coordinateToCell(int,int);
 // extracts a vector for each one
 
-setBundlePtr solver::getValidNumForCurrCoordinate(int targetX ,int targetY){
+setBundlePtr solver::getSetsFromRowColCell(int targetX ,int targetY){
     board& boardRef = *initialBoard_.get();
-    int x = boardRef[3][2];
-    cout<<x;
     set col = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     set row{col};
     set cell{col};
-
+    //    cout<< "contents of col from getrValidNum..." << col.size() <<endl;
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
-            
+            int currVal = boardRef[x][y];
             if(targetX == x){
-                
+                // we are in the column
+                // if it's not zero, remove elem from col set
+                if(currVal != 0 && col.find(currVal) != col.end()){
+                    col.erase(currVal);
+                }
             }
             if(targetY == y){
-
+                row.erase(currVal);
             }
             if(coordinateToCell(targetY, targetX)){
-
+                cell.erase(currVal);
             }
-            
         }
     }
     
@@ -55,13 +56,13 @@ setBundlePtr solver::getValidNumForCurrCoordinate(int targetX ,int targetY){
       5. Else, populatle the board with this random point
       6. Repeat until the entire cell is filled in
     */
-    setBundlePtr p = make_shared<setBundle>(vector{row, col, cell});
+    setBundlePtr p = make_shared<setBundle>(vector{ col,row, cell});
     return p;
 }
 
 unique_ptr<board> solver::solve(){
     // call funcitons to resolve the board
-    getValidNumForCurrCoordinate(1,1);
+    getSetsFromRowColCell(1,1);
     return move(solvedBoard_);
 }
 

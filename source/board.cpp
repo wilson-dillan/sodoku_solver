@@ -16,6 +16,7 @@ board::board() :
     height_{HEIGHT},
     width_{WIDTH} {}
 
+
 board::board(const gameBoard& input) :
     b_{make_unique<gameBoard>(input)},
     height_{HEIGHT},
@@ -27,6 +28,10 @@ board::~board(){
 
 int board::get(int x, int y){
     return (*b_)[y][x];
+}
+void board::set(point pt, int val){
+    using std::get;
+    (*b_)[get<1>(pt)][get<0>(pt)] = val;
 }
     
 // pretty prints the board

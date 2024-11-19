@@ -9,7 +9,7 @@
 using namespace std;
 
 typedef vector<vector<int> > gameBoard; // typedef of board that stores the pieces
-
+typedef tuple<int,int> point;
 namespace constants
 {
 const int HEIGHT = 9;
@@ -39,6 +39,7 @@ class board{
         boardRow tmp{*this, x};
         return tmp;
     };
+    void set(point,int);
     int get(int x, int y); // helper method for double operator indexing
     unique_ptr<gameBoard> solve();
   private:

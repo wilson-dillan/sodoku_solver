@@ -14,7 +14,7 @@ class solver {
     solver(unique_ptr<board>); // solver needs a board unique pointer
     unique_ptr<board> solve();
     bool isValidBoard(); // returns true if the solvedBoard_ is valid
-    setBundlePtr getValidNumForCurrCoordinate(int,int);// returns a vector of sets for each row, column and cell. 27
+    setBundlePtr getSetsFromRowColCell(int,int);// returns a vector of sets for each row, column and cell. 27
     board& getInitialBoardRef(); // returns reference to initialBoard_ memory
   private:
     unique_ptr<board> initialBoard_;
