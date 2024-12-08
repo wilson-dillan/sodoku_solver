@@ -12,62 +12,116 @@ using namespace std;
 
 typedef map<int,vector<int>> groupingMap;
 
+template<typename S>
+auto select_random(const S &s) {
+    size_t n = rand() % s.size();
+    auto it = std::begin(s);
+    // 'advance' the iterator n times
+    std::advance(it,n);
+    return it;
+}
+
 solver::solver(unique_ptr<board> b) :
     initialBoard_{move(b)},
-    solvedBoard_{move(make_unique<board>())}
-{}
+    solvedBoard_{move(make_unique<board>())},
+    order{1, 2, 3, 4, 5, 6, 7, 8, 9}
+{
+    // i think there's a cleaner way via modification of the copy constructor,
+    // but this is all feel to do as of now
+    board& solvedBoardRef = *solvedBoard_;
+    board& initialBoardRef = *initialBoard_;
+    for(int i = 0; i < WIDTH; i++){
+        for(int j = 0; j < HEIGHT; j++){
+            point currPt{i,j};
+            solvedBoardRef.set(currPt, initialBoardRef[i][j]);
+        }
+    }
+
+}
 
 int coordinateToCell(int,int);
-// extracts a vector for each one
 
-setBundlePtr solver::getSetsFromRowColCell(int targetX ,int targetY){
+
+/*
+ * Return set of valid values for given targetX and targetY 
+ * 
+ */
+set<int> solver::getCandidatesFromCoordinate(int targetX ,int targetY){
     board& boardRef = *initialBoard_.get();
-    set col = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    set row{col};
-    set cell{col};
-    //    cout<< "contents of col from getrValidNum..." << col.size() <<endl;
+    set<int> remainder = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int targetCell = coordinateToCell(targetX, targetY);
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
             int currVal = boardRef[x][y];
-            if(targetX == x){
-                // we are in the column
-                // if it's not zero, remove elem from col set
-                if(currVal != 0 && col.find(currVal) != col.end()){
-                    col.erase(currVal);
+            
+            if(targetX == x || targetY == y || coordinateToCell(x,y) == targetCell){
+                if(remainder.find(currVal) != remainder.end()){
+                    remainder.erase(currVal);
                 }
             }
-            if(targetY == y){
-                row.erase(currVal);
-            }
-            if(coordinateToCell(targetY, targetX)){
-                cell.erase(currVal);
+        }
+    }
+    
+    /*
+      TODO:
+      1. Given the existing (x,y), return a set of valid coordinates.
+      2. Check if set is size 0.
+      3. If yes, populate a different cell.
+      5. Else, populatle the board with this random point.
+      6. Repeat until the entire cell is filled in.
+    */
+   
+    return remainder;
+}
+
+
+
+
+unique_ptr<board> solver::solve(){
+    /*
+     * TODO: 
+     * 1. Pick a cell to populate
+     * 2. Populate it.
+     * 3. Pick the next cell.
+     * 4. Repeat until finished.
+     * 
+     */
+
+    // let's populate cell 6
+    
+    return move(solvedBoard_);
+}
+
+
+// return yes or no if a cell was populated
+bool solver::populateCell(int targetCell){
+    // iterate over entire board
+    // when I reach a coordinate inside the target cell
+    // replace it with a valid number
+    // If there are no valid numbers left, return false.
+    // I don't have time to enhance the solver algorithm
+    board& solvedBoardRef = *solvedBoard_;
+    for(int i = 0; i < WIDTH; i++){
+        for(int j = 0; j < HEIGHT; j++){
+            if(coordinateToCell(i,j) == targetCell){
+                // obtain set of valid coordinates
+                set<int> candidates = getCandidatesFromCoordinate(i,j);
+                // get random value
+                int randVal = *select_random(candidates);
+                point pt{i,j};
+                solvedBoardRef.set(pt, randVal); // populate solved board with valid point
             }
         }
     }
     
     
-    /*
-      TODO:
-      1. Given the existing (x,y), examine the entire column, and remove those
-      existing entries from the set.
-      2. Repeat for row and cell.
-      3. The remaining set will contain the valid points for that coordinate.
-      4. If the set is empty. return an error. Let's hope it's not empty.
-      5. Else, populatle the board with this random point
-      6. Repeat until the entire cell is filled in
-    */
-    setBundlePtr p = make_shared<setBundle>(vector{ col,row, cell});
-    return p;
+    
+    return true; 
 }
 
-unique_ptr<board> solver::solve(){
-    // call funcitons to resolve the board
-    getSetsFromRowColCell(1,1);
-    return move(solvedBoard_);
-}
 
 bool solver::isValidBoard(){
-    // fill in logic here
+  
     return false;
 }
 
@@ -76,4 +130,22 @@ bool solver::isValidBoard(){
 
 int coordinateToCell(int x, int y){
     return (x/3 + 1) + (y/3 *3);
+}
+
+
+// ugly hack used only for testing purposes
+bool solver::testIfSolutionAndInitialMatch(){
+      // fill in logic here
+    bool init = true;
+    for(int i = 0; i < WIDTH; i++){
+        for(int j = 0; j < HEIGHT; j++){
+            init = (*initialBoard_)[i][j] == (*solvedBoard_)[i][j] && init;
+        }
+    }
+    return init;
+}
+
+void solver::printSolvedBoard(){
+    board& solvedBoardRef = *solvedBoard_;
+    solvedBoardRef.printBoard();
 }

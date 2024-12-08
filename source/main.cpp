@@ -8,9 +8,6 @@ using namespace constants;
 using namespace std;
 
 int main(){
- 
-
-    
     gameBoard b{
         {1, 1, 1, 1, 1, 1, 1, 1, 1},
         {2, 2, 2, 2, 2, 2, 2, 2, 2},

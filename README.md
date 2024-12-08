@@ -1,3 +1,2 @@
 Next steps:
-- finish the solver
-- get the failing test case in "examineGetSets()" to pass
+- Finish the solver. Currently, it is not filling in a cell correctly
