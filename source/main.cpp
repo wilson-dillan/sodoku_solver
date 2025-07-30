@@ -1,5 +1,3 @@
-// main.cpp
-
 #include <iostream>
 #include "../include/board.hpp"
 #include "../include/solver.hpp"

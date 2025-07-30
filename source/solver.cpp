@@ -80,18 +80,31 @@ set<int> solver::getCandidatesFromCoordinate(int targetX ,int targetY){
 unique_ptr<board> solver::solve(){
     /*
      * TODO: 
-     * 1. Pick a cell to populate
-     * 2. Populate it.
-     * 3. Pick the next cell.
-     * 4. Repeat until finished.
+     * 1. Do a BFS until I hit the final board
+     * 2. If Queue is empty, no such board exists. 
      * 
      */
 
+
     // let's populate cell 6
     
-    return std::move(solvedBoard_);
+    return solver::doBFS();
 }
 
+unique_ptr<board> solver::doBFS(){
+    board& solvedBoardRef = *solvedBoard_;
+    std::cout<< "NUMBER: " << solvedBoardRef[0][2] << endl;
+    std::vector<board> q;
+    std::set<board> seen;
+
+    while(q.size() != 0){
+        // std::vector<board> children = solver::getChildren(q.top) -> this should only return valid children
+        // add all children that are not seen to the queue
+        // remove the top element. 
+        // continue until queue is empty. 
+        // TODO: get children, and is valid board are what I need to do next
+    }
+}
 
 // return yes or no if a cell was populated
 bool solver::populateCell(int targetCell){

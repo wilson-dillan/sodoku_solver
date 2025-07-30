@@ -13,6 +13,7 @@ class solver {
     // solver() = delete;
     solver(unique_ptr<board>); // solver needs a board unique pointer
     unique_ptr<board> solve();
+    unique_ptr<board> doBFS();
     bool isValidBoard(); // returns true if the solvedBoard_ is valid
     set<int> getCandidatesFromCoordinate(int,int); // returns all valid coordinates for curr point
     board& getInitialBoardRef(); // returns reference to initialBoard_ memory
@@ -20,8 +21,8 @@ class solver {
     bool testIfSolutionAndInitialMatch();
     void printSolvedBoard();
   private:
-    unique_ptr<board> initialBoard_;
-    unique_ptr<board> solvedBoard_;
+    const unique_ptr<board> initialBoard_{nullptr};
+    shared_ptr<board> solvedBoard_{nullptr};
     vector<int> order; // order in which cells to solve
     
     
