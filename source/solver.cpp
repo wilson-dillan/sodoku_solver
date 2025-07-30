@@ -22,8 +22,8 @@ auto select_random(const S &s) {
 }
 
 solver::solver(unique_ptr<board> b) :
-    initialBoard_{move(b)},
-    solvedBoard_{move(make_unique<board>())},
+    initialBoard_{std::move(b)},
+    solvedBoard_{make_unique<board>()},
     order{1, 2, 3, 4, 5, 6, 7, 8, 9}
 {
     // i think there's a cleaner way via modification of the copy constructor,
@@ -89,7 +89,7 @@ unique_ptr<board> solver::solve(){
 
     // let's populate cell 6
     
-    return move(solvedBoard_);
+    return std::move(solvedBoard_);
 }
 
 

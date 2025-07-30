@@ -12,7 +12,7 @@ using namespace constants;
 
 // board constructor initializes an empty 9x9 sodoku board
 board::board() : 
-    b_{make_unique<gameBoard>(9,vector<int>(9,0))},// test
+    b_{make_unique<gameBoard>(9,vector<int>(9,0))},
     height_{HEIGHT},
     width_{WIDTH} {}
 
