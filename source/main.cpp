@@ -8,6 +8,7 @@ using namespace constants;
 using namespace std;
 
 int main(){
+    std::cout<<"Running source"<<std::endl;
     gameBoard b{
         {1, 1, 1, 1, 1, 1, 1, 1, 1},
         {2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -22,9 +23,6 @@ int main(){
     
     solver mySolver{make_unique<board>(b)};
     unique_ptr<board> solvedBoard = mySolver.solve();
-
-
-    // the best way for me to access the unique_ptr resource is to create a reference to it via get()
     
     return 0;
 }

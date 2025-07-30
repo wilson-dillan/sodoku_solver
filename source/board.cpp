@@ -62,6 +62,7 @@ void board::printBoard(){
         }
         cout<< i + 1 << ' '; 
     }
+    cout<<endl;
     
 }
 

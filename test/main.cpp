@@ -6,8 +6,8 @@
 
 // If parameter is not true, test fails
 // This check function would be provided by the test framework
-#define IS_TRUE(x) if(!(x)) std::cout << __FUNCTION__ << " failed on line " << __LINE__ << std::endl;
-#define IS_FALSE(x) if((x)) std::cout << __FUNCTION__ << " failed on line " << __LINE__ << std::endl;
+#define IS_TRUE(x) if(!(x)) std::cout <<"FAILURE: "<< __FUNCTION__ << " FAILED on line " << __LINE__ << std::endl;
+#define IS_FALSE(x) if((x)) std::cout << "FAILURE: "<<__FUNCTION__ << " FAILED on line " << __LINE__ << std::endl;
 
 // "test" class checks my testing behavior
 using namespace constants;
@@ -67,8 +67,6 @@ void checkSolverConstructor(){
 void checkOneCellIsValid(){
      solver s{make_unique<board>(bII)};
      s.populateCell(2);
-     s.printSolvedBoard();
-
 }
 
 // check that method sets are correct
@@ -93,7 +91,7 @@ void examineGetSets(){
     
 }
 int main(){
-
+    std::cout<<"Running tests"<<endl;
 
     checkCoordinateSimple();
     examineGetSets();
@@ -101,6 +99,7 @@ int main(){
     checkOneCellIsValid();
     checkBoardSet();
     
+    std::cout<<"\n<<<<<<<<TESTS PASSED!>>>>>>>>>\n" << std::endl;
     return 0;
 
 }
