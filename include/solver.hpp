@@ -4,6 +4,7 @@
 #include "board.hpp"
 #include <set>
 
+
 typedef vector<set<int>> setBundle;
 typedef shared_ptr<setBundle> setBundlePtr;
 
@@ -17,7 +18,11 @@ class solver {
     bool isValidBoard(); // returns true if the solvedBoard_ is valid
     set<int> getCandidatesFromCoordinate(int,int); // returns all valid coordinates for curr point
     board& getInitialBoardRef(); // returns reference to initialBoard_ memory
-    bool populateCell(int); // fill the given cell with valid values
+    vector<board> getChildren(board&);
+    bool isValidPlacement(board& inputBoard, point coordinate, int targetNumber);
+    set<int> getNumbersInCell(const board& inputBoard, int cell);
+    bool checkTargetNotInCol(const board& inputBoard, int currCol, int targetNumber) const;
+    bool checkTargetNotInRow(const board& inputBoard, int currRow, int targetNumber) const;
     bool testIfSolutionAndInitialMatch();
     void printSolvedBoard();
   private:

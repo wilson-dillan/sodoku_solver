@@ -5,6 +5,8 @@
 #include "../include/board.hpp"
 
 #include <map>
+#include <tuple>
+#include <cassert>
 
 // holds data structures for analyzing and parsing through the board
 using namespace constants;
@@ -28,8 +30,8 @@ solver::solver(unique_ptr<board> b) :
 {
     // i think there's a cleaner way via modification of the copy constructor,
     // but this is all feel to do as of now
-    board& solvedBoardRef = *solvedBoard_;
-    board& initialBoardRef = *initialBoard_;
+    board& solvedBoardRef = *solvedBoard_.get();
+    board& initialBoardRef = *initialBoard_.get();
     for(int i = 0; i < WIDTH; i++){
         for(int j = 0; j < HEIGHT; j++){
             point currPt{i,j};
@@ -42,12 +44,8 @@ solver::solver(unique_ptr<board> b) :
 int coordinateToCell(int,int);
 
 
-/*
- * Return set of valid values for given targetX and targetY 
- * 
- */
-set<int> solver::getCandidatesFromCoordinate(int targetX ,int targetY){
-    board& boardRef = *initialBoard_.get();
+set<int> getCandidatesFromCoordinateHelper(board& inputBoard, int targetX ,int targetY){
+    board& boardRef = inputBoard;
     set<int> remainder = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     int targetCell = coordinateToCell(targetX, targetY);
     for(int x = 0; x < WIDTH; x++){
@@ -74,8 +72,15 @@ set<int> solver::getCandidatesFromCoordinate(int targetX ,int targetY){
     return remainder;
 }
 
+/*
+ * Return set of valid values for given targetX and targetY 
+ * 
+ */
 
 
+set<int> solver::getCandidatesFromCoordinate(int targetX ,int targetY){
+    return getCandidatesFromCoordinateHelper(*initialBoard_.get(), targetX, targetY);
+}
 
 unique_ptr<board> solver::solve(){
     /*
@@ -92,8 +97,7 @@ unique_ptr<board> solver::solve(){
 }
 
 unique_ptr<board> solver::doBFS(){
-    board& solvedBoardRef = *solvedBoard_;
-    std::cout<< "NUMBER: " << solvedBoardRef[0][2] << endl;
+    board& solvedBoardRef = *solvedBoard_.get();
     std::vector<board> q;
     std::set<board> seen;
 
@@ -104,38 +108,99 @@ unique_ptr<board> solver::doBFS(){
         // continue until queue is empty. 
         // TODO: get children, and is valid board are what I need to do next
     }
+    return nullptr;
 }
 
-// return yes or no if a cell was populated
-bool solver::populateCell(int targetCell){
-    // iterate over entire board
-    // when I reach a coordinate inside the target cell
-    // replace it with a valid number
-    // If there are no valid numbers left, return false.
-    // I don't have time to enhance the solver algorithm
-    board& solvedBoardRef = *solvedBoard_;
-    for(int i = 0; i < WIDTH; i++){
-        for(int j = 0; j < HEIGHT; j++){
-            if(coordinateToCell(i,j) == targetCell){
-                // obtain set of valid coordinates
-                set<int> candidates = getCandidatesFromCoordinate(i,j);
-                // get random value
-                int randVal = *select_random(candidates);
-                point pt{i,j};
-                solvedBoardRef.set(pt, randVal); // populate solved board with valid point
+vector<board> solver::getChildren(board& parentBoard){
+    vector<board> childrenToReturn{}; // empty list to return
+    for(int x = 0; x < WIDTH; x++){
+        for(int y = 0; y < HEIGHT; y++){
+            set<int> validTargetsForCurrCoordinate = getCandidatesFromCoordinateHelper(parentBoard,x,y);
+            // append all these to the "children to return"
+            // Note the children to return will all be conflicting
+            for(int e:validTargetsForCurrCoordinate){
+                board newChildBoard = parentBoard;
+                point pt = std::make_tuple(0,0);
+                // RESUME HERE:
+                // newChildBoard.set(pt,1000);
+
+                // cout<<"Child Board" << endl;
+                // newChildBoard.printBoard();
+
+                // cout<<"Parent Board" << endl;
+                // parentBoard.printBoard();
+
+                // childrenToReturn.push_back()
             }
         }
     }
-    
-    
-    
-    return true; 
+    return childrenToReturn;
 }
+
+// checks if the targetNumber can be placed at the proposed coordinate or not
+bool solver::isValidPlacement(board& inputBoard, point coordinate, int targetNumber){
+    int x = get<0>(coordinate);
+    int y = get<1>(coordinate);
+
+    int cellNumOfTargetInt = coordinateToCell(x,y);
+
+    return true;
+}
+
+bool solver::checkTargetNotInCol(const board& inputBoard, int currCol, int targetNumber) const{
+    // return false if the number already exists
+    assert(currCol<WIDTH);
+    for(int y = 0; y < HEIGHT; y++){
+        if(inputBoard.get(currCol,y) == targetNumber){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool solver::checkTargetNotInRow(const board& inputBoard, int currRow, int targetNumber) const{
+    assert(currRow<HEIGHT);
+    for(int x = 0; x < WIDTH; x++){
+        if(inputBoard.get(x,currRow) == targetNumber){
+            return false;
+        }
+    }
+    return true;
+}
+
 
 
 bool solver::isValidBoard(){
   
     return false;
+}
+
+/*
+    @Brief: when an input board is passed in with a cell, return
+    all the numbers in that specific cell
+
+    @Return: a set of numbers in the given cell. Should not contain duplicates
+    and should not be greater than 9.
+*/
+set<int> solver::getNumbersInCell(const board& inputBoard, int cell){
+    set<int> retSet;
+
+    for(int x = 0; x < WIDTH; x++){
+        for(int y = 0; y < HEIGHT; y++){
+            if(coordinateToCell(x,y) == cell){
+                // we are in the cell
+                int currVal = inputBoard.get(x,y);
+                if(currVal != 0){
+                    assert(retSet.count(currVal) == 0);
+                    retSet.insert(currVal);
+                }
+                
+                    // assert if element is seen in set, besides 0  
+            }
+        }
+    }
+    assert(retSet.size() < 10);
+    return retSet;
 }
 
 // returns the cell number based on the
@@ -159,6 +224,6 @@ bool solver::testIfSolutionAndInitialMatch(){
 }
 
 void solver::printSolvedBoard(){
-    board& solvedBoardRef = *solvedBoard_;
+    board& solvedBoardRef = *solvedBoard_.get();
     solvedBoardRef.printBoard();
 }

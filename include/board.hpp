@@ -6,6 +6,7 @@
 #include <memory>
 #include <iostream>
 
+
 using namespace std;
 
 typedef vector<vector<int> > gameBoard; // typedef of board that stores the pieces
@@ -24,6 +25,7 @@ class board{
     ~board(); // destructor
     void printBoard(); // pretty prints the class's board
     bool isValidBoard(); // determines if the current board meets Sodoku's rules
+    board(const board&); // copy constructor
     // used to implement an [][] indexing scheme into my object
     class boardRow{
       public:
@@ -40,7 +42,7 @@ class board{
         return tmp;
     };
     void set(point,int);
-    int get(int x, int y); // helper method for double operator indexing
+    int get(int x, int y) const; // helper method for double operator indexing
     unique_ptr<gameBoard> solve();
   private:
     unique_ptr<gameBoard>  b_; // block of memory holding the board

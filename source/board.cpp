@@ -22,18 +22,23 @@ board::board(const gameBoard& input) :
     height_{HEIGHT},
     width_{WIDTH} {}
 
-board::~board(){
-  // hello world    
+board::~board(){}
+
+board::board(const board& otherBoard){ // copy constructor
+    cout<<"COPY CONSTRUCTOR IS CALLED!" << endl;
 }
 
-int board::get(int x, int y){
+int board::get(int x, int y) const{
     return (*b_)[y][x];
 }
 void board::set(point pt, int val){
     using std::get;
     (*b_)[get<1>(pt)][get<0>(pt)] = val;
 }
-    
+
+
+
+
 // pretty prints the board
 void board::printBoard(){
     int idx{HEIGHT};
