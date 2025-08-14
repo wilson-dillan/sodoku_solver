@@ -59,6 +59,30 @@ gameBoard bII{
     {5, 8, 7, 0, 0, 0, 0, 0, 6},
 };
 
+gameBoard childrenTesting{
+    {1, 2, 3, 4, 5, 6, 7, 8, 9},
+    {1, 2, 0, 3, 5, 6, 7, 8, 9}, // 4 as candidates
+    {9, 8, 7, 6, 5, 4, 3, 2, 1},
+    {1, 2, 3, 4, 5, 6, 7, 8, 9},
+    {1, 2, 3, 4, 5, 6, 0, 8, 9}, // no candidates
+    {9, 8, 7, 6, 5, 4, 3, 2, 1},
+    {1, 2, 3, 4, 4, 6, 7, 2, 2},
+    {1, 2, 3, 4, 2, 6, 0, 2, 2}, // 5, 8, 9 as candidates
+    {1, 2, 3, 4, 5, 6, 7, 2, 2}
+};
+
+gameBoard childrenTestingII{
+    {1, 2, 3, 4, 5, 6, 7, 8, 0}, // none
+    {1, 2, 3, 4, 5, 6, 7, 8, 9},
+    {9, 8, 7, 6, 5, 4, 3, 2, 1},
+    {1, 2, 3, 4, 5, 6, 7, 8, 9},
+    {1, 1, 3, 0, 5, 6, 1, 8, 9}, // 7, 2
+    {9, 8, 7, 6, 5, 4, 3, 2, 1},
+    {1, 2, 3, 4, 4, 6, 7, 8, 9},
+    {1, 2, 3, 8, 2, 6, 7, 8, 9},
+    {0, 2, 3, 4, 1, 1, 7, 8, 9} // 5, 6
+};
+
 }
 
 // checks the coordinate on the board is as expected
@@ -157,13 +181,47 @@ void checkRowAndCell(){
     IS_FALSE(s.checkTargetNotInRow(boardRef,7,4));
 }
 
-void testChildren(){
-    solver s{make_unique<board>(bII)};
-    board b = board(bII);
 
-    s.getChildren(b);
+bool boardListContainsExpectedPoints(set<target> expectedPoints, vector<board> boardList);
+
+void testChildren(){
+    solver s{make_unique<board>(b)};
+    board testBoard = board(childrenTesting);
+
+    auto boardList = s.getChildren(testBoard);
+
+    set<target> expectedPoints = { 
+        make_tuple(make_tuple(2,1),4),
+        make_tuple(make_tuple(6,4),0), // this should not produce an additional child
+        make_tuple(make_tuple(6,7),5),
+        make_tuple(make_tuple(6,7),8),
+        make_tuple(make_tuple(6,7),9)
+    };
+    
+    IS_TRUE(expectedPoints.size() - 1 == boardList.size()); // number of returned children boards must match
+    IS_TRUE(boardListContainsExpectedPoints(expectedPoints,boardList));
 
 }
+
+void testChildrenII(){
+    solver s{make_unique<board>(b)};
+    board testBoard = board(childrenTestingII);
+
+    auto boardList = s.getChildren(testBoard);
+
+    set<target> expectedPoints = { 
+        make_tuple(make_tuple(8,0),0), // this should not produce an additional child
+        make_tuple(make_tuple(3,4),7),
+        make_tuple(make_tuple(3,4),2),
+        make_tuple(make_tuple(0,8),5),
+        make_tuple(make_tuple(0,8),6)
+    };
+
+    IS_TRUE(expectedPoints.size() - 1 == boardList.size()); // number of returned children boards must match
+    IS_TRUE(boardListContainsExpectedPoints(expectedPoints,boardList));
+
+}
+
 
 int main(){
     std::cout<<"Running tests"<<endl;
@@ -176,8 +234,30 @@ int main(){
     checkGetNumbersInCell_II();
     checkRowAndCell();
     testChildren();
+    testChildrenII();
 
     std::cout<<"\n<<<<<<<<TESTS PASSED!>>>>>>>>>\n" << std::endl;
     return 0;
 
 }
+
+bool boardListContainsExpectedPoints(set<target> expectedPoints, vector<board> boardList){
+    bool outerBool = false;
+    set<target> duplicatesList = expectedPoints;// used for set removal
+    for(const target& e : expectedPoints){
+        bool innerBool = false;
+        for(const board& b: boardList){
+
+            point currPt = get<0>(e);
+            int targetValue = get<1>(e);
+            innerBool = b.get(currPt) == targetValue || innerBool;
+            if(b.get(currPt) == targetValue){
+                target targetToErase = make_tuple(currPt,targetValue);
+                duplicatesList.erase(targetToErase);
+            }
+        }
+        outerBool = outerBool || innerBool;
+    }
+    return outerBool && duplicatesList.size() == 0;
+}
+

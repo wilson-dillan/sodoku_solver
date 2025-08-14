@@ -11,6 +11,8 @@ using namespace std;
 
 typedef vector<vector<int> > gameBoard; // typedef of board that stores the pieces
 typedef tuple<int,int> point;
+typedef tuple<point,int> target; // that simplifies target points
+
 namespace constants
 {
 const int HEIGHT = 9;
@@ -43,6 +45,7 @@ class board{
     };
     void set(point,int);
     int get(int x, int y) const; // helper method for double operator indexing
+    int get(point pt) const; // helper method, accepts a point
     unique_ptr<gameBoard> solve();
   private:
     unique_ptr<gameBoard>  b_; // block of memory holding the board

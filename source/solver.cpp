@@ -112,25 +112,22 @@ unique_ptr<board> solver::doBFS(){
 }
 
 vector<board> solver::getChildren(board& parentBoard){
+    
     vector<board> childrenToReturn{}; // empty list to return
+
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
             set<int> validTargetsForCurrCoordinate = getCandidatesFromCoordinateHelper(parentBoard,x,y);
             // append all these to the "children to return"
             // Note the children to return will all be conflicting
-            for(int e:validTargetsForCurrCoordinate){
-                board newChildBoard = parentBoard;
-                point pt = std::make_tuple(0,0);
-                // RESUME HERE:
-                // newChildBoard.set(pt,1000);
-
-                // cout<<"Child Board" << endl;
-                // newChildBoard.printBoard();
-
-                // cout<<"Parent Board" << endl;
-                // parentBoard.printBoard();
-
-                // childrenToReturn.push_back()
+            // enter if current cell is empty
+            if(parentBoard.get(x,y) == 0){
+                for(int e:validTargetsForCurrCoordinate){
+                    board newChildBoard = parentBoard;
+                    point pt = std::make_tuple(x,y);
+                    newChildBoard.set(pt,e);
+                    childrenToReturn.push_back(newChildBoard);
+                }
             }
         }
     }
