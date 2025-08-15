@@ -41,6 +41,17 @@ class board{
         boardRow tmp{*this, x};
         return tmp;
     };
+    bool operator<(const board& other) const {
+      for(int x = 0; x < constants::WIDTH; x++){
+        for(int y = 0; y < constants::HEIGHT; y++){
+          if(this->get(x,y) < other.get(x,y)){
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
     void set(point,int);
     int get(int x, int y) const; // helper method for double operator indexing
     int get(point pt) const; // helper method, accepts a point

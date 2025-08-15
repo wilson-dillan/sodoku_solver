@@ -7,6 +7,7 @@
 #include <map>
 #include <tuple>
 #include <cassert>
+#include <deque>
 
 // holds data structures for analyzing and parsing through the board
 using namespace constants;
@@ -90,22 +91,47 @@ unique_ptr<board> solver::solve(){
 
     // let's populate cell 6
     
-    return solver::doBFS();
+    return nullptr;
 }
 
-unique_ptr<board> solver::doBFS(){
+board solver::doBFS(){
     board& solvedBoardRef = *solvedBoard_.get();
-    std::vector<board> q;
+    std::deque<board> q;
     std::set<board> seen;
-
+    q.push_front(*initialBoard_.get());
+    int cnt = 0; 
     while(q.size() != 0){
         // std::vector<board> children = solver::getChildren(q.top) -> this should only return valid children
         // add all children that are not seen to the queue
         // remove the top element. 
         // continue until queue is empty. 
         // TODO: get children, and is valid board are what I need to do next
+        board& topElem = q.front();
+        if(isSolvedBoard(topElem)){
+            cout<<"SOLVED!"<<endl;
+            return q.front();
+        }
+        if(cnt %5000 == 0){
+            cout<<"Iter:\t" << cnt << endl;
+        }
+        cnt++;
+        
+        
+        vector<board> childBoards = getChildren(topElem);
+        for(board& b : childBoards){
+            // add to queue if the board is valid and we have not seen this yet
+            if(isSolvedBoard(b)){
+                board retBoard = b;
+                cout<<"SOLVED!" << endl;
+                return retBoard;
+            } else if(isValidBoard(b) && seen.count(b) == 0 && getChildren(b).size() > 0){
+                q.push_front(b);
+                seen.insert(b);
+            }
+        }
+        q.pop_front();
     }
-    return nullptr;
+    return solvedBoardRef;
 }
 
 vector<board> solver::getChildren(board& parentBoard){
@@ -131,15 +157,7 @@ vector<board> solver::getChildren(board& parentBoard){
     return childrenToReturn;
 }
 
-// checks if the targetNumber can be placed at the proposed coordinate or not
-bool solver::isValidPlacement(board& inputBoard, point coordinate, int targetNumber){
-    int x = get<0>(coordinate);
-    int y = get<1>(coordinate);
 
-    int cellNumOfTargetInt = coordinateToCell(x,y);
-
-    return true;
-}
 
 bool solver::checkTargetNotInCol(const board& inputBoard, int currCol, int targetNumber) const{
     // return false if the number already exists
@@ -222,7 +240,7 @@ void solver::printSolvedBoard(){
 // ensures each number only appears once
 // in each row, col and cell
 
-bool solver::isValidBoard(const board& board){
+bool solver::isValidBoard(board& board){
     grouping cellsMap;
     grouping rowsMap;
     grouping colsMap;
@@ -239,7 +257,7 @@ bool solver::isValidBoard(const board& board){
             for(int y = 0; y < HEIGHT; y++){
                 
                 int currNumber = board.get(x,y);
-                grouping currGrouping = kv.second;
+                grouping& currGrouping = kv.second;
 
                 int currIdentifier = -1; // this will be either a row, col or cell number used to access
                 // determine boundary type accessor based on groupingType
@@ -250,18 +268,21 @@ bool solver::isValidBoard(const board& board){
                     currIdentifier = x;
                 } else if(kv.first == boundaryType::CELL){
                     // for cell, we behave differently
-                    int currIdentifier = coordinateToCell(x,y); // grouping is a cell
+                    currIdentifier = coordinateToCell(x,y); // grouping is a cell
                 } else{
                     // should not enter this case
                     assert(false);
                 }
-                
-                cout << currGrouping[currIdentifier].size();
+   
+
+                assert(currIdentifier != -1);
                 // first check if number is new
-                if(currGrouping[currIdentifier].find(currNumber) == currGrouping[currIdentifier].end()){
+                if(currNumber != 0 && 
+                    currGrouping[currIdentifier].find(currNumber) == currGrouping[currIdentifier].end()
+                ){
                     // if number is new, add it to the set
                     currGrouping[currIdentifier].insert(currNumber);
-                } else{
+                } else if(currNumber != 0){
                     // return false since that means we have seen this before;
                     return false;
                 }
@@ -269,4 +290,16 @@ bool solver::isValidBoard(const board& board){
         }
     }
     return true;
+}
+
+bool solver::isSolvedBoard(board& b){
+    // solved board if it's valid and if there's no empty spaces in it
+    for(int x = 0; x < HEIGHT; x++){
+        for(int y = 0; y < WIDTH; y++){
+            if(b.get(x,y) == 0){
+                return false;
+            }
+        }
+    }
+    return isValidBoard(b); 
 }

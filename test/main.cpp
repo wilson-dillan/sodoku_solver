@@ -54,7 +54,7 @@ gameBoard bII{
     {0, 0, 0, 1, 2, 3, 0, 9, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 9, 0, 0, 0, 0, 0},
-    {9, 1, 3, 0, 0, 0, 1, 8, 3},
+    {9, 1, 3, 0, 0, 0, 2, 8, 4},
     {4, 6, 2, 0, 0, 0, 0, 0, 0},
     {5, 8, 7, 0, 0, 0, 0, 0, 6},
 };
@@ -83,8 +83,64 @@ gameBoard childrenTestingII{
     {0, 2, 3, 4, 1, 1, 7, 8, 9} // 5, 6
 };
 
-}
+gameBoard mostlyFilled{
+    {8, 2, 7, 1, 5, 4, 3, 9, 6}, 
+    {9, 6, 5, 3, 2, 7, 1, 4, 0},
+    {3, 4, 1, 6, 8, 9, 7, 5, 2},
+    {5, 9, 3, 4, 6, 8, 2, 7, 1},
+    {4, 7, 2, 5, 1, 3, 6, 8, 9}, 
+    {6, 1, 8, 9, 7, 2, 4, 3, 5},
+    {7, 8, 6, 2, 3, 5, 9, 1, 4},
+    {1, 5, 4, 7, 9, 6, 8, 2, 3},
+    {2, 3, 9, 8, 4, 1, 5, 6, 7} 
+};
 
+gameBoard solvedAndFilled{
+    {8, 2, 7, 1, 5, 4, 3, 9, 6}, 
+    {9, 6, 5, 3, 2, 7, 1, 4, 8},
+    {3, 4, 1, 6, 8, 9, 7, 5, 2},
+    {5, 9, 3, 4, 6, 8, 2, 7, 1},
+    {4, 7, 2, 5, 1, 3, 6, 8, 9}, 
+    {6, 1, 8, 9, 7, 2, 4, 3, 5},
+    {7, 8, 6, 2, 3, 5, 9, 1, 4},
+    {1, 5, 4, 7, 9, 6, 8, 2, 3},
+    {2, 3, 9, 8, 4, 1, 5, 6, 7} 
+};
+
+gameBoard sparslyFilled{
+    {8, 0, 0, 1, 5, 0, 3, 0, 6}, 
+    {0, 0, 5, 3, 0, 0, 0, 0, 0},
+    {3, 4, 0, 0, 0, 9, 0, 0, 0},
+    {0, 0, 3, 0, 6, 8, 2, 7, 1},
+    {4, 0, 0, 0, 0, 0, 0, 0, 0}, 
+    {6, 1, 8, 9, 7, 0, 4, 0, 5},
+    {0, 0, 0, 0, 0, 5, 0, 1, 0},
+    {1, 5, 0, 0, 0, 0, 0, 2, 3},
+    {2, 3, 9, 0, 4, 1, 0, 6, 7} 
+};
+
+gameBoard hardSodoku{
+    {0, 0, 6, 5, 0, 0, 0, 0, 0}, 
+    {7, 0, 5, 0, 0, 2, 3, 0, 0},
+    {0, 3, 0, 0, 0, 0, 0, 8, 0},
+    {0, 5, 0, 0, 9, 6, 0, 7, 0},
+    {1, 0, 4, 0, 0, 0, 0, 0, 8}, 
+    {0, 0, 0, 8, 2, 0, 0, 0, 0},
+    {0, 2, 0, 0, 0, 0, 0, 9, 0},
+    {0, 0, 7, 2, 0, 0, 4, 0, 0},
+    {0, 0, 0, 0, 0, 7, 5, 0, 0} 
+};
+
+}
+void checkCoordinateToCell(){
+    board myBoard{bII};
+    solver s{make_unique<board>(myBoard)};
+    IS_TRUE(s.coordinateToCell(0,0) == 1);
+    IS_TRUE(s.coordinateToCell(3,3) == 5);
+    IS_TRUE(s.coordinateToCell(6,3) == 6);
+    IS_TRUE(s.coordinateToCell(4,5) == 5);
+    IS_TRUE(s.coordinateToCell(5,8) == 8);
+}
 // checks the coordinate on the board is as expected
 void checkCoordinateSimple()
 {
@@ -226,30 +282,67 @@ void isValidBoard(){
     board testBoard = board(b);
     board testBoardII = board(bII);
     board testBoardIII = board(childrenTesting);
+    board mf = board(mostlyFilled);
 
     IS_FALSE(s.isValidBoard(testBoard));
-    // IS_TRUE(s.isValidBoard(testBoardII));
-    // IS_FALSE(s.isValidBoard(testBoardIII));
+    IS_TRUE(s.isValidBoard(testBoardII));
+    IS_FALSE(s.isValidBoard(testBoardIII));
+    IS_TRUE(s.isValidBoard(mf));
 
+    // intentionally modify the board to show that it will fail
+    testBoardII.set(make_tuple<int,int>(8,8), 4);
+    IS_FALSE(s.isValidBoard(testBoardII));
+}
+
+void checkIsSolvedBoard(){
+    solver s{make_unique<board>(solvedAndFilled)};
+    board saf{solvedAndFilled};
+    IS_TRUE(s.isSolvedBoard(saf));
+
+    saf.set(make_tuple(0,0),7);
+
+    IS_FALSE(s.isSolvedBoard(saf));
+}
+
+
+void checkBFS(){
+    solver s{make_unique<board>(mostlyFilled)};
+
+    board solved = s.doBFS();
+    IS_TRUE(s.isSolvedBoard(solved));
+}
+
+// checking BFS on a less filled board
+void checkBFSII(){
+    solver s{make_unique<board>(sparslyFilled)};
+
+    board solved = s.doBFS();
+    IS_TRUE(s.isSolvedBoard(solved));
 }
 
 int main(){
     std::cout<<"Running tests"<<endl;
 
-    checkCoordinateSimple();
-    examineGetSets();
-    checkSolverConstructor();
-    checkBoardSet();
-    checkGetNumbersInCell();
-    checkGetNumbersInCell_II();
-    checkRowAndCell();
-    testChildren();
-    testChildrenII();
-    isValidBoard();
+    // checkCoordinateToCell();
+    // checkCoordinateSimple();
+    // examineGetSets();
+    // checkSolverConstructor();
+    // checkBoardSet();
+    // checkGetNumbersInCell();
+    // checkGetNumbersInCell_II();
+    // checkRowAndCell();
+    // testChildren();
+    // testChildrenII();
+    // isValidBoard();
+    // checkBFS();
+    // checkIsSolvedBoard();
+
+    checkBFSII();
+
+
 
     std::cout<<"\n<<<<<<<<TESTS PASSED!>>>>>>>>>\n" << std::endl;
     return 0;
-
 }
 
 bool boardListContainsExpectedPoints(set<target> expectedPoints, vector<board> boardList){
@@ -271,4 +364,3 @@ bool boardListContainsExpectedPoints(set<target> expectedPoints, vector<board> b
     }
     return outerBool && duplicatesList.size() == 0;
 }
-
