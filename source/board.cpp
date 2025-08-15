@@ -82,15 +82,7 @@ void board::printBoard(){
     
 }
 
-// returns if the board is valid or not
-// obtain 27 sets
 
-bool board::isValidBoard(){
-    for(int i = 0; i < HEIGHT; i++){
-        
-    }
-    return false;
-}
 
 
 

@@ -219,9 +219,19 @@ void testChildrenII(){
 
     IS_TRUE(expectedPoints.size() - 1 == boardList.size()); // number of returned children boards must match
     IS_TRUE(boardListContainsExpectedPoints(expectedPoints,boardList));
-
 }
 
+void isValidBoard(){
+    solver s{make_unique<board>(b)};
+    board testBoard = board(b);
+    board testBoardII = board(bII);
+    board testBoardIII = board(childrenTesting);
+
+    IS_FALSE(s.isValidBoard(testBoard));
+    // IS_TRUE(s.isValidBoard(testBoardII));
+    // IS_FALSE(s.isValidBoard(testBoardIII));
+
+}
 
 int main(){
     std::cout<<"Running tests"<<endl;
@@ -235,6 +245,7 @@ int main(){
     checkRowAndCell();
     testChildren();
     testChildrenII();
+    isValidBoard();
 
     std::cout<<"\n<<<<<<<<TESTS PASSED!>>>>>>>>>\n" << std::endl;
     return 0;

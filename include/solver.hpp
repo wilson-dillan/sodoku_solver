@@ -4,7 +4,6 @@
 #include "board.hpp"
 #include <set>
 
-
 typedef vector<set<int>> setBundle;
 typedef shared_ptr<setBundle> setBundlePtr;
 
@@ -15,10 +14,12 @@ class solver {
     solver(unique_ptr<board>); // solver needs a board unique pointer
     unique_ptr<board> solve();
     unique_ptr<board> doBFS();
-    bool isValidBoard(); // returns true if the solvedBoard_ is valid
     set<int> getCandidatesFromCoordinate(int,int); // returns all valid coordinates for curr point
     board& getInitialBoardRef(); // returns reference to initialBoard_ memory
     vector<board> getChildren(board&);
+    set<int> getCandidatesFromCoordinateHelper(board& inputBoard, int targetX ,int targetY);
+    int coordinateToCell(int x, int y);
+    bool isValidBoard(const board&);
     bool isValidPlacement(board& inputBoard, point coordinate, int targetNumber);
     set<int> getNumbersInCell(const board& inputBoard, int cell);
     bool checkTargetNotInCol(const board& inputBoard, int currCol, int targetNumber) const;

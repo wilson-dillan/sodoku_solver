@@ -1,2 +1,2 @@
 Next steps:
-- Implement the rest of the solver algorithm now that I have the "getChildren" method completed
+- Fix the "isValidBoard" method. For some reason, my numbers are not remaining in the set. 

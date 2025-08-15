@@ -12,7 +12,9 @@
 using namespace constants;
 using namespace std;
 
-typedef map<int,vector<int>> groupingMap;
+enum class boundaryType{ROW, COL, CELL}; // Cells are treated differently. For Cell, we nee to use the cell grouping
+typedef unordered_map<int, std::set<int>> grouping; // each row, col and cell can be stored in a "grouping"
+typedef unordered_map<boundaryType, grouping> boardGroupings; // maps what type of boundary we are looking at. Either cell or row/col
 
 template<typename S>
 auto select_random(const S &s) {
@@ -38,21 +40,16 @@ solver::solver(unique_ptr<board> b) :
             solvedBoardRef.set(currPt, initialBoardRef[i][j]);
         }
     }
-
 }
 
-int coordinateToCell(int,int);
-
-
-set<int> getCandidatesFromCoordinateHelper(board& inputBoard, int targetX ,int targetY){
+set<int> solver::getCandidatesFromCoordinateHelper(board& inputBoard, int targetX ,int targetY){
     board& boardRef = inputBoard;
     set<int> remainder = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int targetCell = coordinateToCell(targetX, targetY);
+    int targetCell = solver::coordinateToCell(targetX, targetY);
     for(int x = 0; x < WIDTH; x++){
         for(int y = 0; y < HEIGHT; y++){
             int currVal = boardRef[x][y];
-            
-            if(targetX == x || targetY == y || coordinateToCell(x,y) == targetCell){
+            if(targetX == x || targetY == y || solver::coordinateToCell(x,y) == targetCell){
                 if(remainder.find(currVal) != remainder.end()){
                     remainder.erase(currVal);
                 }
@@ -119,7 +116,7 @@ vector<board> solver::getChildren(board& parentBoard){
         for(int y = 0; y < HEIGHT; y++){
             set<int> validTargetsForCurrCoordinate = getCandidatesFromCoordinateHelper(parentBoard,x,y);
             // append all these to the "children to return"
-            // Note the children to return will all be conflicting
+            // Note the children to return could all be conflicting
             // enter if current cell is empty
             if(parentBoard.get(x,y) == 0){
                 for(int e:validTargetsForCurrCoordinate){
@@ -167,10 +164,6 @@ bool solver::checkTargetNotInRow(const board& inputBoard, int currRow, int targe
 
 
 
-bool solver::isValidBoard(){
-  
-    return false;
-}
 
 /*
     @Brief: when an input board is passed in with a cell, return
@@ -203,7 +196,7 @@ set<int> solver::getNumbersInCell(const board& inputBoard, int cell){
 // returns the cell number based on the
 // given x and y input coordinate
 
-int coordinateToCell(int x, int y){
+int solver::coordinateToCell(int x, int y){
     return (x/3 + 1) + (y/3 *3);
 }
 
@@ -223,4 +216,57 @@ bool solver::testIfSolutionAndInitialMatch(){
 void solver::printSolvedBoard(){
     board& solvedBoardRef = *solvedBoard_.get();
     solvedBoardRef.printBoard();
+}
+
+// returns if the board is valid or not
+// ensures each number only appears once
+// in each row, col and cell
+
+bool solver::isValidBoard(const board& board){
+    grouping cellsMap;
+    grouping rowsMap;
+    grouping colsMap;
+
+    boardGroupings bg = {
+        {boundaryType::ROW, rowsMap},
+        {boundaryType::COL, colsMap},
+        {boundaryType::CELL, cellsMap}
+    };
+
+    // pass over each board grouping
+    for(auto& kv : bg){
+        for(int x = 0; x < WIDTH; x++){
+            for(int y = 0; y < HEIGHT; y++){
+                
+                int currNumber = board.get(x,y);
+                grouping currGrouping = kv.second;
+
+                int currIdentifier = -1; // this will be either a row, col or cell number used to access
+                // determine boundary type accessor based on groupingType
+
+                if(kv.first == boundaryType::ROW){ 
+                    currIdentifier = y;
+                } else if(kv.first == boundaryType::COL){
+                    currIdentifier = x;
+                } else if(kv.first == boundaryType::CELL){
+                    // for cell, we behave differently
+                    int currIdentifier = coordinateToCell(x,y); // grouping is a cell
+                } else{
+                    // should not enter this case
+                    assert(false);
+                }
+                
+                cout << currGrouping[currIdentifier].size();
+                // first check if number is new
+                if(currGrouping[currIdentifier].find(currNumber) == currGrouping[currIdentifier].end()){
+                    // if number is new, add it to the set
+                    currGrouping[currIdentifier].insert(currNumber);
+                } else{
+                    // return false since that means we have seen this before;
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
