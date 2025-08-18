@@ -7,6 +7,8 @@
 typedef vector<set<int>> setBundle;
 typedef shared_ptr<setBundle> setBundlePtr;
 
+/* handles all logic related to solving a sudoku board */
+
 using namespace std;
 class solver {
   public:
@@ -17,7 +19,6 @@ class solver {
     void doBackTracking();
     bool isSolvedBoard();
     set<int> getCandidatesFromCoordinate(int,int); // returns all valid coordinates for curr point
-    board& getInitialBoardRef(); // returns reference to initialBoard_ memory
     vector<board> getChildren(board&);
     set<int> getCandidatesFromCoordinateHelper(board& inputBoard, int targetX ,int targetY);
     int coordinateToCell(int x, int y);

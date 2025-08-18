@@ -9,7 +9,7 @@
 #include <cassert>
 #include <deque>
 
-// holds data structures for analyzing and parsing through the board
+/* handles all logic related to solving a sudoku board */
 using namespace constants;
 using namespace std;
 

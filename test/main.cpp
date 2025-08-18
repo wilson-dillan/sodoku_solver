@@ -119,7 +119,7 @@ gameBoard sparslyFilled{
     {2, 3, 9, 0, 4, 1, 0, 6, 7} 
 };
 
-gameBoard hardSodoku{
+gameBoard hardsudoku{
     {0, 0, 6, 5, 0, 0, 0, 0, 0}, 
     {7, 0, 5, 0, 0, 2, 3, 0, 0},
     {0, 3, 0, 0, 0, 0, 0, 8, 0},
@@ -194,9 +194,7 @@ void checkGetNumbersInCell_II(){
     for(int e:expectedVals){
         IS_TRUE(actualVals.find(e) != actualVals.end());
     }
-
 }
-
 
 bool boardListContainsExpectedPoints(set<target> expectedPoints, vector<board> boardList);
 
@@ -294,7 +292,7 @@ void checkDoBackTrackingII(){
 }
 
 void checkDoBackTrackingIII(){
-    solver s{make_unique<board>(hardSodoku)};
+    solver s{make_unique<board>(hardsudoku)};
 
     s.doBackTracking();
     
@@ -319,8 +317,6 @@ int main(){
     checkDoBackTracking();
     checkDoBackTrackingII();
     checkDoBackTrackingIII();
-
-
 
     std::cout<<"\n<<<<<<<<TESTS PASSED!>>>>>>>>>\n" << std::endl;
     return 0;

@@ -7,6 +7,7 @@
 #include <iostream>
 
 using namespace std;
+/* Handles storage of a physical Sudoku board, as well as board visualization, and get/set */
 
 typedef vector<vector<int> > gameBoard; // typedef of board that stores the pieces
 typedef tuple<int,int> point;
