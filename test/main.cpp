@@ -164,30 +164,6 @@ void checkSolverConstructor(){
      IS_TRUE(s.testIfSolutionAndInitialMatch());
 }
 
-
-
-// check that method sets are correct
-void examineGetSets(){
-    
-    solver s{make_unique<board>(bII)};
-    set<int> candidates = s.getCandidatesFromCoordinate(7,7);
-    set<int> expectedContents{5,7};
-    IS_TRUE(candidates.size() == expectedContents.size());
-    for(int e:candidates){
-        IS_TRUE(expectedContents.find(e) != expectedContents.end());
-    }
-
-    candidates = s.getCandidatesFromCoordinate(3, 5);
-    expectedContents = {4, 5, 6, 7, 8};
-
-    IS_TRUE(candidates.size() == expectedContents.size());
-    for(int e:candidates){
-        IS_TRUE(expectedContents.find(e) != expectedContents.end());
-    }
-    
-    
-}
-
 void checkGetNumbersInCell(){
     solver s{make_unique<board>(bII)};
     const board& boardRef = board(bII);
@@ -219,22 +195,6 @@ void checkGetNumbersInCell_II(){
         IS_TRUE(actualVals.find(e) != actualVals.end());
     }
 
-}
-
-void checkRowAndCell(){
-    solver s{make_unique<board>(bII)};
-    const board& boardRef = board(bII);
-
-    IS_TRUE(s.checkTargetNotInCol(boardRef,3,2));
-    IS_TRUE(s.checkTargetNotInCol(boardRef,7,6));
-    IS_TRUE(s.checkTargetNotInCol(boardRef,8,5));
-    IS_TRUE(s.checkTargetNotInCol(boardRef,8,7));
-    IS_TRUE(s.checkTargetNotInRow(boardRef,4,4));
-
-
-    IS_FALSE(s.checkTargetNotInCol(boardRef,3,1));
-    IS_FALSE(s.checkTargetNotInRow(boardRef,6,9));
-    IS_FALSE(s.checkTargetNotInRow(boardRef,7,4));
 }
 
 
@@ -306,38 +266,59 @@ void checkIsSolvedBoard(){
 
 
 void checkBFS(){
+    // BFS algorithm does not work on a sparsely filled board. It needs a backtracking approach first
     solver s{make_unique<board>(mostlyFilled)};
 
-    board solved = s.doBFS();
-    IS_TRUE(s.isSolvedBoard(solved));
+    s.doBFS();
+    IS_TRUE(s.getSolvedBool());
+    IS_TRUE(s.isSolvedBoard());
 }
 
-// checking BFS on a less filled board
-void checkBFSII(){
+
+void checkDoBackTracking(){
+    solver s{make_unique<board>(mostlyFilled)};
+
+    s.doBackTracking();
+
+    IS_TRUE(s.getSolvedBool());
+    IS_TRUE(s.isSolvedBoard());
+}
+
+void checkDoBackTrackingII(){
     solver s{make_unique<board>(sparslyFilled)};
 
-    board solved = s.doBFS();
-    IS_TRUE(s.isSolvedBoard(solved));
+    s.doBackTracking();
+    
+    IS_TRUE(s.getSolvedBool());
+    IS_TRUE(s.isSolvedBoard());
+}
+
+void checkDoBackTrackingIII(){
+    solver s{make_unique<board>(hardSodoku)};
+
+    s.doBackTracking();
+    
+    IS_TRUE(s.getSolvedBool());
+    IS_TRUE(s.isSolvedBoard());
 }
 
 int main(){
     std::cout<<"Running tests"<<endl;
 
-    // checkCoordinateToCell();
-    // checkCoordinateSimple();
-    // examineGetSets();
-    // checkSolverConstructor();
-    // checkBoardSet();
-    // checkGetNumbersInCell();
-    // checkGetNumbersInCell_II();
-    // checkRowAndCell();
-    // testChildren();
-    // testChildrenII();
-    // isValidBoard();
-    // checkBFS();
-    // checkIsSolvedBoard();
-
-    checkBFSII();
+    checkCoordinateToCell();
+    checkCoordinateSimple();
+    checkSolverConstructor();
+    checkBoardSet();
+    checkGetNumbersInCell();
+    checkGetNumbersInCell_II();
+    testChildren();
+    testChildrenII();
+    isValidBoard();
+    checkBFS();
+    checkIsSolvedBoard();
+    checkDoBackTracking();
+    checkDoBackTrackingII();
+    checkDoBackTrackingIII();
 
 
 

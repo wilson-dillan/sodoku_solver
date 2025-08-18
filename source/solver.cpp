@@ -17,19 +17,9 @@ enum class boundaryType{ROW, COL, CELL}; // Cells are treated differently. For C
 typedef unordered_map<int, std::set<int>> grouping; // each row, col and cell can be stored in a "grouping"
 typedef unordered_map<boundaryType, grouping> boardGroupings; // maps what type of boundary we are looking at. Either cell or row/col
 
-template<typename S>
-auto select_random(const S &s) {
-    size_t n = rand() % s.size();
-    auto it = std::begin(s);
-    // 'advance' the iterator n times
-    std::advance(it,n);
-    return it;
-}
-
 solver::solver(unique_ptr<board> b) :
     initialBoard_{std::move(b)},
-    solvedBoard_{make_unique<board>()},
-    order{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    solvedBoard_{make_unique<board>()}
 {
     // i think there's a cleaner way via modification of the copy constructor,
     // but this is all feel to do as of now
@@ -70,60 +60,64 @@ set<int> solver::getCandidatesFromCoordinateHelper(board& inputBoard, int target
     return remainder;
 }
 
-/*
- * Return set of valid values for given targetX and targetY 
- * 
- */
 
-
-set<int> solver::getCandidatesFromCoordinate(int targetX ,int targetY){
-    return getCandidatesFromCoordinateHelper(*initialBoard_.get(), targetX, targetY);
+bool solver::solve(){
+    if(currSolver == solverType::BACKTRACKING){
+        doBackTracking(); 
+    } else if(currSolver == solverType::BFS){
+        doBFS();
+    } else{
+        assert(true);
+    }
+    return getSolvedBool();
 }
 
-unique_ptr<board> solver::solve(){
-    /*
-     * TODO: 
-     * 1. Do a BFS until I hit the final board
-     * 2. If Queue is empty, no such board exists. 
-     * 
-     */
-
-
-    // let's populate cell 6
-    
-    return nullptr;
+void solver::doBackTracking(){
+    board& initialBoard = *solvedBoard_.get();
+    solved_ = doBackTrackingHelper(initialBoard); // true if solved
+}
+board& solver::getSolvedBoardRef(){
+    return *solvedBoard_.get();
+}
+bool solver::doBackTrackingHelper(board& input){
+    for(int x = 0; x < WIDTH; x++){
+        for(int y = 0; y < HEIGHT; y++){
+            // only enter into blank tiles
+            if(input.get(make_tuple(x,y)) == 0){
+                for(int e = 1; e < 10; e++){
+                    input.set(make_tuple(x,y),e);
+                    if(isValidBoard(input)){
+                        if(doBackTrackingHelper(input)){
+                            return true;
+                        }
+                    }
+                }
+                // since we did not find the element, we backtrack and set the existing element to zero 
+                input.set(make_tuple(x,y), 0);
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
-board solver::doBFS(){
-    board& solvedBoardRef = *solvedBoard_.get();
+void solver::doBFS(){
+    board& initial = *solvedBoard_.get();
+    solved_ = doBFSHelper(initial);
+}
+
+bool solver::doBFSHelper(board& input){
     std::deque<board> q;
     std::set<board> seen;
-    q.push_front(*initialBoard_.get());
-    int cnt = 0; 
+    q.push_front(input);
     while(q.size() != 0){
-        // std::vector<board> children = solver::getChildren(q.top) -> this should only return valid children
-        // add all children that are not seen to the queue
-        // remove the top element. 
-        // continue until queue is empty. 
-        // TODO: get children, and is valid board are what I need to do next
-        board& topElem = q.front();
-        if(isSolvedBoard(topElem)){
-            cout<<"SOLVED!"<<endl;
-            return q.front();
-        }
-        if(cnt %5000 == 0){
-            cout<<"Iter:\t" << cnt << endl;
-        }
-        cnt++;
-        
-        
+        board& topElem = q.front();        
         vector<board> childBoards = getChildren(topElem);
         for(board& b : childBoards){
             // add to queue if the board is valid and we have not seen this yet
             if(isSolvedBoard(b)){
-                board retBoard = b;
-                cout<<"SOLVED!" << endl;
-                return retBoard;
+                solvedBoard_ = make_shared<board>(b);
+                return true;
             } else if(isValidBoard(b) && seen.count(b) == 0 && getChildren(b).size() > 0){
                 q.push_front(b);
                 seen.insert(b);
@@ -131,7 +125,8 @@ board solver::doBFS(){
         }
         q.pop_front();
     }
-    return solvedBoardRef;
+    // queue is empty, we have not seen the board
+    return false;
 }
 
 vector<board> solver::getChildren(board& parentBoard){
@@ -157,18 +152,6 @@ vector<board> solver::getChildren(board& parentBoard){
     return childrenToReturn;
 }
 
-
-
-bool solver::checkTargetNotInCol(const board& inputBoard, int currCol, int targetNumber) const{
-    // return false if the number already exists
-    assert(currCol<WIDTH);
-    for(int y = 0; y < HEIGHT; y++){
-        if(inputBoard.get(currCol,y) == targetNumber){
-            return false;
-        }
-    }
-    return true;
-}
 
 bool solver::checkTargetNotInRow(const board& inputBoard, int currRow, int targetNumber) const{
     assert(currRow<HEIGHT);
@@ -236,6 +219,11 @@ void solver::printSolvedBoard(){
     solvedBoardRef.printBoard();
 }
 
+// when no arguments are used, assume we check solvedBoard_;
+bool solver::isSolvedBoard(){
+    return isSolvedBoard(getSolvedBoardRef());
+}
+
 // returns if the board is valid or not
 // ensures each number only appears once
 // in each row, col and cell
@@ -290,6 +278,11 @@ bool solver::isValidBoard(board& board){
         }
     }
     return true;
+}
+
+// returns the internal boolean on if the board was solved successfully
+bool solver::getSolvedBool(){
+    return solved_;
 }
 
 bool solver::isSolvedBoard(board& b){

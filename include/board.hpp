@@ -21,6 +21,7 @@ const int WIDTH = 9;
 class board{
 
   public:
+  
     board(); // constructor for board. Default is board filled with zeros
     board(const gameBoard&); // accepts a game board to initialize the class
     ~board(); // destructor
@@ -41,6 +42,14 @@ class board{
         boardRow tmp{*this, x};
         return tmp;
     };
+    void operator=(const board & other){
+      for(int x = 0; x < constants::WIDTH; x++){
+        for(int y = 0; y < constants::HEIGHT; y++){
+          this->set(make_tuple(x,y), other.get(x,y));
+        }
+      }
+    }
+
     bool operator<(const board& other) const {
       for(int x = 0; x < constants::WIDTH; x++){
         for(int y = 0; y < constants::HEIGHT; y++){
